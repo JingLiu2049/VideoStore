@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Video Shop</title>
+    <style>
+        .container {
+            width: 1000px;
+            background-color: #F1F3F4;
+            padding: 10px 0;
+            box-sizing: border-box;
+            border: solid black 2px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-evenly;
+            margin-bottom: 20px;
+        }
+
+        fieldset {
+            width: 48%;
+            border: solid black 1px;
+            height: 300px;
+            overflow-y: scroll;
+            margin-bottom: 20px;
+            padding: 10px;
+        }
+
+        button {
+            width: 20%;
+        }
+
+        div.show_detail {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+        }
+
+        div.detail_info {
+            width: 76%;
+            border: black solid 1px;
+            white-space: pre-wrap;
+        }
+        #customer_detail{
+            height: 280px;
+            overflow-y: scroll;
+        }
+        #video_detail{
+            height: 100px;
+        }
+
+        div.title {
+            width: 20%;
+            text-align: center;
+        }
+
+        .white {
+            background-color: white;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
+        </script>
+    <script>
+        $(document).ready(function () {
+
+            function getInfoAjax() {
+                let data = $("form").serializeArray();
+                $.post({
+                    url: "http://127.0.0.1:5000/detail",
+                    data,
+                    success: function (result) {
+                        if (result.status === 1) {
+                            let { operation,video,customer } = result.data
+                            $("#video_detail").text(video)
+                            $("#customer_detail").html(customer.replace(/[\n]/g,"<br/>"))
+                            $("#returnBtn").attr("disabled", false)
+                            $("#rentBtn").attr("disabled", false)
+                            if (operation && (operation === "rent")) {
+                                $("#returnBtn").attr("disabled", true)
+                            } else if (operation && operation === "return") {
+                                $("#rentBtn").attr("disabled", true)
+                            } else if(operation && operation === "na"){
+                                $("#rentBtn").attr("disabled", true)
+                                $("#returnBtn").attr("disabled", true)
+                            }
+                        } else {
+                            alert(result.msg)
+                        }
+                    }
+                })
+            }
+
+            $(".field").change(function (e) {
+                getInfoAjax()
+            })
+
+            $("#rentBtn").click(function(e){
+                let data = $("form").serializeArray();
+                $.post({
+                    url:"http://127.0.0.1:5000/rent",
+                    data,
+                    success:function(result){
+                        console.log(result.msg)
+                        getInfoAjax()
+                        alert(result.msg)
+                    }
+                })
+            })
+            
+            $("#returnBtn").click(function(e){
+                let data = $("form").serializeArray();
+                $.post({
+                    url:"http://127.0.0.1:5000/return",
+                    data,
+                    success:function(result){
+                        console.log(result.msg)
+                        getInfoAjax()
+                        alert(result.msg)
+                    }
+                })
+
+            })
+
+            $("#reset").click(function (e) {
+                $("#returnBtn").attr("disabled", false)
+                $("#rentBtn").attr("disabled", false)
+                $(".detail_info").text('')
+            })
+        })
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Video Shop</h1>
+        <form>
+            <fieldset class="white  field">
+                <legend>Customer</legend>
+                {% for i in customers.values() %}
+                <div>
+                    <input id="customer{{i.id}}" type="radio" name="customer" value="{{i.id}}">
+                    <label for="customer{{i.id}}">{{i.name}}</label>
+                </div>
+                {%endfor%}
+            </fieldset>
+            <fieldset class="white field">
+                <legend>Movie</legend>
+                {% for i in videos.values() %}
+                <div>
+                    <input id="video{{i.id}}" type="radio" name="video" value="{{i.id}}">
+                    <label for="video{{i.id}}">{{i.title}}</label>
+                </div>
+                {%endfor%}
+            </fieldset>
+            <button type="button" id="rentBtn">Rent</button>
+            <button type="button" id="returnBtn">Return</button>
+            <button type="reset" id="reset">Reset</button>
+        </form>
+        <div class="show_detail ">
+            <div class="title">Customer Detail</div>
+            <div class="detail_info white" id="customer_detail"></div>
+        </div>
+        <div class="show_detail">
+            <div class="title">Movie Detail</div>
+            <div class="detail_info white" id="video_detail"></div>
+        </div>
+
+    </div>
+</body>
+
+</html>
