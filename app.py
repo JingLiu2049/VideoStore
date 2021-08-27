@@ -11,8 +11,8 @@ vs = getVideoShopController()
 def videoShop():
     return render_template('home.html',videos = vs.videos,customers = vs.customers)
 
-# deal the request of showing details for customer and video
-# also send video status for front-end side to disable buttons 
+# deal with the request of showing details for customers and videos
+# also send the video status to front-end side to disable buttons 
 @app.route('/detail',methods = ['POST'])
 def showDetail():
     customerID = request.form.get('customer')
@@ -44,6 +44,7 @@ def renting():
         print(e.__class__,e)
         response = MyResponse(0,msg="Your connection is unstable, please try later.")
     return jsonify(response.__dict__)
+
 
 # deal with request of returning a video rented by a customer
 @app.route('/return',methods = ['POST'])

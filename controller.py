@@ -89,6 +89,9 @@ class VideoShop:
         else:
             return 'na'
 
+
+# below are functions to create controller instence
+# *********************************************************************
 # a function used to get data from files
 def getFileData(filename):
     args = []
@@ -96,12 +99,12 @@ def getFileData(filename):
         data = videos.read().splitlines()
         for i in data:
             arg = i.split(',')
-            arg[1] = arg[1].strip()
-            arg[2] = arg[2].strip()
+            for j in range(len(arg)):
+                arg[j] = arg[j].strip()
             args.append(arg)
     return args
 
-# a function to create controller object with data from a file
+# a function to create VideoShop object with data from a file
 def getVideoShopController():
     vs = VideoShop()
     try:
@@ -119,8 +122,4 @@ def getVideoShopController():
 
 
 
-if __name__ == '__main__':
-    vs = getVideoShopController()
-    print(vs.videos)
-    print(vs.customers)
                 

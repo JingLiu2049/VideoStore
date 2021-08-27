@@ -70,8 +70,6 @@ class Video:
                 by {customerObj.name}, please check and try again!.')
 
 
-
-
 class Customer:
     ID = 100000
     def __init__(self,name, city,payment = 0.0 ):

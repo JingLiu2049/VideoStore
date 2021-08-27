@@ -10,6 +10,7 @@ class TestVideo(unittest.TestCase):
         self.assertTrue(isinstance(v.id,int))
         self.assertEqual(v.currentCustomer,None)
         self.assertEqual(v.history,[])
+
     def test_showDetail(self):
         v = Video('Avatar','2010',True)
         self.assertEqual(v.showDetail(),'Avatar 2010 Available')
@@ -25,6 +26,7 @@ class TestVideo(unittest.TestCase):
         vf = Video('Avatar','2010',False)
         with self.assertRaises( VideoError):
             vf.setRenting(c)
+
     def test_checkRentalRecord(self):
         v = Video('Avatar','2010',True)
         cTrue = Customer('Jack','Rolleston')
@@ -32,6 +34,7 @@ class TestVideo(unittest.TestCase):
         v.setRenting(cTrue)
         self.assertTrue(v.checkRentalRecord(cTrue))
         self.assertFalse(v.checkRentalRecord(cFalse))
+
     def test_setReturning(self):
         v = Video('Avatar','2010',True)
         cTrue = Customer('Jack','Rolleston')
@@ -54,6 +57,7 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(c.payment,0.0)
         self.assertEqual(c.currentVideos,[])
         self.assertEqual(c.history,[])
+        
     def test_setRenting(self):
         c = Customer('Jack','Rolleston')
         v1 = Video('Avatar','2010')
